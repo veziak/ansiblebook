@@ -7,14 +7,20 @@
 
 import os
 import sys
+import django
+
+
 
 # Add the project directory to system path
 proj_dir = os.path.expanduser(os.environ['PROJECT_DIR'])
 sys.path.append(proj_dir)
 
-os.environ['DJANGO_SETTINGS_MODULE'] = 'settings'
+os.environ['DJANGO_SETTINGS_MODULE'] = 'cms.settings'
+django.setup()
+
 from django.conf import settings
 from django.contrib.sites.models import Site
+
 
 domain = os.environ['WEBSITE_DOMAIN']
 Site.objects.filter(id=settings.SITE_ID).update(domain=domain)

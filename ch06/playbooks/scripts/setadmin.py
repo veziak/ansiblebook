@@ -7,13 +7,15 @@
 
 import os
 import sys
+import django
 
 # Add the project directory to system path
 proj_dir = os.path.expanduser(os.environ['PROJECT_DIR'])
 sys.path.append(proj_dir)
 
-os.environ['DJANGO_SETTINGS_MODULE'] = 'settings'
+os.environ['DJANGO_SETTINGS_MODULE'] = 'cms.settings'
 
+django.setup()
 
 from mezzanine.utils.models import get_user_model
 User = get_user_model()

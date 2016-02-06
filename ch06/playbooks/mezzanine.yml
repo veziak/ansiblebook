@@ -4,17 +4,17 @@
   vars:
     user: "{{ ansible_ssh_user }}"
     proj_name: mezzanine-example
-    venv_home: "{{ ansible_env.HOME }}"
-    venv_path: "{{ venv_home }}/{{ proj_name }}"
-    proj_dirname: project
-    proj_path: "{{ venv_path }}/{{ proj_dirname }}"
+    user_home: "{{ ansible_env.HOME }}"
+    venv_path: "{{ user_home }}/.venv"
+    proj_dirname: mezzanine-example
+    proj_path: "{{ user_home }}/{{ proj_dirname }}"
     reqs_path: requirements.txt
     manage: "{{ python }} {{ proj_path }}/manage.py"
     live_hostname: 192.168.33.10.xip.io
     domains:
       - 192.168.33.10.xip.io
       - www.192.168.33.10.xip.io
-    repo_url: git@github.com:lorin/mezzanine-example.git
+    repo_url: https://github.com/veziak/mezzanine-example
     gunicorn_port: 8000
     locale: en_US.UTF-8
     # Variables below don't appear in Mezannine's fabfile.py
@@ -47,7 +47,7 @@
         - python-virtualenv
         - supervisor
     - name: check out the repository on the host
-      git: repo={{ repo_url }} dest={{ proj_path }} accept_hostkey=yes
+      git: repo={{ repo_url }} dest={{ proj_path }} accept_hostkey=yes force=yes
     - name: install required python packages
       pip: name={{ item }} virtualenv={{ venv_path }}
       with_items:
@@ -76,14 +76,13 @@
       sudo: True
       sudo_user: postgres
     - name: generate the settings file
-      template: src=templates/local_settings.py.j2 dest={{ proj_path }}/local_settings.py
+      template: src=templates/local_settings.py.j2 dest={{ proj_path }}/cms/local_settings.py
     - name: sync the database, apply migrations, collect static content
       django_manage:
         command: "{{ item }}"
         app_path: "{{ proj_path }}"
         virtualenv: "{{ venv_path }}"
       with_items:
-        - syncdb
         - migrate
         - collectstatic
     - name: set the site id
