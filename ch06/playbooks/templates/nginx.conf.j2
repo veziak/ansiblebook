@@ -38,7 +38,7 @@ server {
     }
 
     location /robots.txt {
-        root            {{ proj_path }}/static;
+        root            {{ proj_path }}/static/robots.txt;
         access_log      off;
         log_not_found   off;
     }
