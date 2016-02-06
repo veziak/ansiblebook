@@ -30,6 +30,9 @@
   vars_files:
     - secrets.yml
   tasks:
+    - name: add apt sources
+      apt_repository: repo="ppa:nginx/stable" state=present
+      sudo: True
     - name: install apt packages
       apt: pkg={{ item }} update_cache=yes cache_valid_time=3600
       sudo: True
@@ -136,7 +139,7 @@
 
   handlers:
     - name: restart supervisor
-      supervisorctl: name=gunicorn_mezzanine state=restarted
+      supervisorctl: name=web:cms state=restarted
       sudo: True
     - name: restart nginx
       service: name=nginx state=restarted
